@@ -1,7 +1,7 @@
 import { IAuthActions, authActionTypes } from './auth-types';
 
 export interface IUser {
-  id: number | string;
+  id: number;
   name: string;
 }
 

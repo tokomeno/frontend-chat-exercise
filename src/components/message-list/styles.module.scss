@@ -9,26 +9,6 @@
       height: 100%;
     }
   }
-  .footer {
-    height: 70px;
-    padding: 10px;
-    background: white;
-    border-top: 1px solid #eeeef1;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    .addNewMessage {
-      width: 100%;
-      display: flex;
-      textarea {
-        width: 80%;
-      }
-      button {
-        width: 15%;
-      }
-    }
-  }
 }
 
 .messageContainer {

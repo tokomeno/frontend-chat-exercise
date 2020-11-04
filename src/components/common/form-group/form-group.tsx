@@ -15,13 +15,7 @@ export const FormGroup: React.FC<Props> = ({
 }) => {
   return (
     <div className={classNames('form-group', className)}>
-      <label
-        className={classNames({
-          ['text-danger']: hasError,
-        })}
-      >
-        {label}
-      </label>
+      <label>{label}</label>
       {children}
     </div>
   );

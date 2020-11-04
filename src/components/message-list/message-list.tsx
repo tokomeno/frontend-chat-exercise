@@ -5,8 +5,9 @@ import { IStoreState } from '../../redux/mainReducer';
 import { IConversation } from '../../redux/room/room.interface';
 import { ConversationSocketInstance } from '../../socket/conversation-socket/conversation-socket';
 import { TopBar } from '../UI/top-bar/top-bar';
-import { AddMessage } from './add-message';
+import { AddMessage } from '../add-message/add-message';
 import styles from './styles.module.scss';
+import { MessageItem } from './message-item';
 
 interface Props {
   conversation?: IConversation;
@@ -43,17 +44,11 @@ const _MessageList: React.FC<Props> = ({ conversation }) => {
       <div className={styles.scrollWrapper}>
         <div ref={listWrapper} className={styles.messageListContainer}>
           {conversation.conversationMessages.map((message) => (
-            <div
+            <MessageItem
               key={message.id}
-              className={classNames(styles.messageContainer, {
-                // eslint-disable-next-line eqeqeq
-                [styles.byMe]: user?.id == message?.user?.id,
-              })}
-            >
-              <div className={styles.timestamp}>{message.time}</div>
-              <div className={styles.author}>{message.user?.name}</div>
-              <div className={styles.text}>{message.message}</div>
-            </div>
+              currentUserId={user!.id}
+              message={message}
+            />
           ))}
         </div>
       </div>

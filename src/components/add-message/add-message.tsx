@@ -13,7 +13,7 @@ export const AddMessage: React.FC<Props> = ({ onSubmit }) => {
     inputHandler.setInputValue('');
   };
   return (
-    <div className={styles.footer}>
+    <div className={styles.wrapper}>
       <div className={styles.addNewMessage}>
         <textarea
           rows={3}

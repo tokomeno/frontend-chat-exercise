@@ -26,7 +26,6 @@ export const Input: React.FC<Props> = ({
   className,
   onkeyup,
   onKeyPress,
-  hasError,
   required,
 }) => {
   return (
@@ -41,9 +40,7 @@ export const Input: React.FC<Props> = ({
         onChange={onChange}
         type={type}
         placeholder={placeholder}
-        className={classNames('form-control', className, {
-          ['is-invalid']: hasError,
-        })}
+        className={classNames('form-control', className)}
       />
     </>
   );

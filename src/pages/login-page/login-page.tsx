@@ -26,7 +26,7 @@ const _LoginPage: React.FC<Props> = ({ setCurrentUser }) => {
     (e.target as any).checkValidity();
     setCurrentUser({
       user: {
-        id: inputs.user_id!,
+        id: +inputs.user_id!,
         name: inputs.user_name!,
       },
     });
