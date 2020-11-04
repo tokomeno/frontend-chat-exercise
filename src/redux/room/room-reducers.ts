@@ -1,8 +1,13 @@
-import { IConversation, IRoom, IRoomUser } from './room.interface';
+import { IRoom, IRoomUser } from './room.interface';
 import { IRoomActions, roomActionTypes } from './room-types';
 import { addLtTimeToConversationList } from './helpers/add-lt-time-to-conversation-list';
 import moment from 'moment';
 import { addUserInList } from './helpers/add-user-in-list';
+import { addNewMessageInConversation } from './helpers/add-new-message-in-conversation';
+import { formatTime } from '../../helpers/format-time';
+import { v4 as uuidv4 } from 'uuid';
+import { removeSendingMessageFromConversation } from './helpers/remove-sending-message-from-conversation';
+import { store } from '../store';
 
 export interface IRoomState {
   room: IRoom | undefined;
@@ -72,20 +77,48 @@ export const roomReducer = (
       };
     }
     case roomActionTypes.NEW_MESSAGE: {
-      const { conversation_id, message } = action.payload;
+      const { conversation_id, message, currentUser } = action.payload;
       if (!state.room) return state;
+      let conversationsList = addNewMessageInConversation({
+        message,
+        conversation_id,
+        conversations_list: state.room.conversations_list,
+      });
+      // If received msg userId is same auth userId it means that we have that message as was as sending status
+      if (currentUser.id === +message.user.id) {
+        conversationsList = removeSendingMessageFromConversation({
+          message,
+          conversation_id,
+          conversations_list: conversationsList,
+        });
+      }
       return {
         ...state,
         room: {
           ...state.room,
-          conversations_list: state.room.conversations_list.map((co) => {
-            if (co.id !== conversation_id) return co;
-            const newConversation: IConversation = {
-              ...co,
-              lastMessage: message,
-              conversationMessages: [...co.conversationMessages, message],
-            };
-            return newConversation;
+          conversations_list: conversationsList,
+        },
+      };
+    }
+    case roomActionTypes.SEND_NEW_MESSAGE: {
+      const { conversation_id, message, currentUser } = action.payload;
+      if (!state.room) return state;
+      let timestamp = Date.now();
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          conversations_list: addNewMessageInConversation({
+            message: {
+              id: uuidv4(),
+              message: message,
+              user: currentUser,
+              time: timestamp,
+              ltTime: formatTime(timestamp),
+              status: 'sending',
+            },
+            conversation_id,
+            conversations_list: state.room.conversations_list,
           }),
         },
       };

@@ -6,6 +6,7 @@ export enum roomActionTypes {
   USER_HAS_LEFT = 'USER_HAS_LEFT',
   SET_ROOM = 'SET_ROOM',
   NEW_MESSAGE = 'NEW_MESSAGE',
+  SEND_NEW_MESSAGE = 'SEND_NEW_MESSAGE',
   SET_ACTIVE_CONVERSATION_ID = 'SET_ACTIVE_CONVERSATION_ID',
 }
 
@@ -37,17 +38,28 @@ export interface IAddRoom {
   type: roomActionTypes.SET_ROOM;
 }
 
-export interface INewMessage {
+export interface IReceiveNewMessage {
   payload: {
     message: Required<IMessage>;
     conversation_id: string;
+    currentUser: IUser;
   };
   type: roomActionTypes.NEW_MESSAGE;
+}
+
+export interface ISendNewMessage {
+  payload: {
+    message: string;
+    conversation_id: string;
+    currentUser: IUser;
+  };
+  type: roomActionTypes.SEND_NEW_MESSAGE;
 }
 
 export type IRoomActions =
   | IUserHasJoined
   | IUserHasLeft
   | IAddRoom
-  | INewMessage
-  | ISetActiveConversationId;
+  | IReceiveNewMessage
+  | ISetActiveConversationId
+  | ISendNewMessage;

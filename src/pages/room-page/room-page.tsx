@@ -6,7 +6,7 @@ import { IStoreState } from '../../redux/mainReducer';
 import { IRoom } from '../../redux/room/room.interface';
 import {
   setRoomAction,
-  newMessageAction,
+  receiveNewMessageAction,
   userHasJoinedAction,
   userHasLeftAction,
   setActiveConversationIdAction,
@@ -22,7 +22,7 @@ interface Props {
   room: IRoom | undefined;
   user: IUser;
   setRoomAction: typeof setRoomAction;
-  newMessageAction: typeof newMessageAction;
+  receiveNewMessageAction: typeof receiveNewMessageAction;
   userHasJoinedAction: typeof userHasJoinedAction;
   userHasLeftAction: typeof userHasLeftAction;
   setActiveConversationIdAction: typeof setActiveConversationIdAction;
@@ -33,7 +33,7 @@ const _RoomPage: React.FC<Props> = ({
   user,
   room,
   setRoomAction,
-  newMessageAction,
+  receiveNewMessageAction,
   userHasJoinedAction,
   userHasLeftAction,
 }) => {
@@ -48,7 +48,7 @@ const _RoomPage: React.FC<Props> = ({
     ConversationSocketInstance.setConnectionQuery(connectionQuery).connect();
     ConversationSocketInstance.onNewMessage((event) => {
       const { payload } = event;
-      newMessageAction(payload);
+      receiveNewMessageAction({ ...payload, currentUser: user });
     });
     ConversationSocketInstance.onUserLeft((event) => {
       const { payload } = event;
@@ -95,7 +95,7 @@ const mapStateToProps = ({ auth, room }: IStoreState) => {
 };
 export const RoomPage = connect(mapStateToProps, {
   setRoomAction,
-  newMessageAction,
+  receiveNewMessageAction,
   userHasJoinedAction,
   userHasLeftAction,
   setActiveConversationIdAction,

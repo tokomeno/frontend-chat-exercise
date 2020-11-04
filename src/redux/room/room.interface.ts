@@ -4,6 +4,10 @@ export interface IRoomUser extends IUser {
   status: 'online' | 'offline';
   last_seen?: string;
 }
+export interface ISendingMessages {
+  message: string;
+  conversation_id: string;
+}
 
 export type IServerRoom = {
   [k in keyof Omit<IRoom, 'users_list'>]: IRoom[k];
@@ -31,4 +35,5 @@ export interface IMessage {
   time: number;
   ltTime?: string;
   user?: IUser;
+  status?: 'sending';
 }

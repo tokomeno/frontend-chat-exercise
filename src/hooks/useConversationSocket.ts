@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IStoreState } from '../redux/mainReducer';
 import {
-  newMessageAction,
   userHasLeftAction,
   userHasJoinedAction,
   setRoomAction,
+  receiveNewMessageAction,
 } from '../redux/room/room-actions';
 import { ConversationSocketInstance } from '../socket/conversation-socket/conversation-socket';
 
@@ -26,7 +26,7 @@ export const useConversationSocket = (roomId: number) => {
     ConversationSocketInstance.setConnectionQuery(connectionQuery).connect();
     ConversationSocketInstance.onNewMessage((event) => {
       const { payload } = event;
-      dispatch(newMessageAction(payload));
+      dispatch(receiveNewMessageAction({ ...payload, currentUser: user }));
     });
     ConversationSocketInstance.onUserLeft((event) => {
       const { payload } = event;

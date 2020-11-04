@@ -4,8 +4,9 @@ import {
   IUserHasLeft,
   IUserHasJoined,
   roomActionTypes,
-  INewMessage,
+  IReceiveNewMessage,
   ISetActiveConversationId,
+  ISendNewMessage,
 } from './room-types';
 
 export const setRoomAction = ({ room }: IAddRoom['payload']): IAddRoom => {
@@ -39,10 +40,11 @@ export const userHasJoinedAction = ({
   };
 };
 
-export const newMessageAction = ({
+export const receiveNewMessageAction = ({
   conversation_id,
   message,
-}: INewMessage['payload']): INewMessage => {
+  currentUser,
+}: IReceiveNewMessage['payload']): IReceiveNewMessage => {
   const newMessage = {
     ...message,
     ltTime: formatTime(message.time),
@@ -52,6 +54,22 @@ export const newMessageAction = ({
     payload: {
       conversation_id,
       message: newMessage,
+      currentUser,
+    },
+  };
+};
+
+export const sendNewMessageAction = ({
+  conversation_id,
+  message,
+  currentUser,
+}: ISendNewMessage['payload']): ISendNewMessage => {
+  return {
+    type: roomActionTypes.SEND_NEW_MESSAGE,
+    payload: {
+      conversation_id,
+      message,
+      currentUser,
     },
   };
 };

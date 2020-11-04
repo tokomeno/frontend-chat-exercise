@@ -1,6 +1,5 @@
-import classNames from 'classnames';
 import React, { useEffect, useRef } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { IStoreState } from '../../redux/mainReducer';
 import { IConversation } from '../../redux/room/room.interface';
 import { ConversationSocketInstance } from '../../socket/conversation-socket/conversation-socket';
@@ -8,13 +7,20 @@ import { TopBar } from '../UI/top-bar/top-bar';
 import { AddMessage } from '../add-message/add-message';
 import styles from './styles.module.scss';
 import { MessageItem } from './message-item';
+import { IUser } from '../../redux/auth/auth-reducers';
+import { sendNewMessageAction } from '../../redux/room/room-actions';
 
 interface Props {
   conversation?: IConversation;
+  user: IUser;
+  sendNewMessageAction: typeof sendNewMessageAction;
 }
 
-const _MessageList: React.FC<Props> = ({ conversation }) => {
-  const user = useSelector(({ auth }: IStoreState) => auth.user);
+const _MessageList: React.FC<Props> = ({
+  conversation,
+  user,
+  sendNewMessageAction,
+}) => {
   const listWrapper = useRef<HTMLDivElement>(null);
 
   const scrollBottom = () => {
@@ -25,6 +31,11 @@ const _MessageList: React.FC<Props> = ({ conversation }) => {
 
   const addNewMessage = (text: string) => {
     ConversationSocketInstance.emitNewMessage({
+      conversation_id: conversation!.id,
+      message: text,
+    });
+    sendNewMessageAction({
+      currentUser: user!,
       conversation_id: conversation!.id,
       message: text,
     });
@@ -48,6 +59,8 @@ const _MessageList: React.FC<Props> = ({ conversation }) => {
               key={message.id}
               currentUserId={user!.id}
               message={message}
+              showAuthor={false}
+              showTime={false}
             />
           ))}
         </div>
@@ -58,11 +71,14 @@ const _MessageList: React.FC<Props> = ({ conversation }) => {
   );
 };
 
-const mapStateToProps = ({ room }: IStoreState) => {
+const mapStateToProps = ({ room, auth }: IStoreState) => {
   return {
+    user: auth.user!,
     conversation: room.room?.conversations_list.find(
       (c) => c.id === room.active_conversation_id
     ),
   };
 };
-export const MessageList = connect(mapStateToProps)(_MessageList);
+export const MessageList = connect(mapStateToProps, { sendNewMessageAction })(
+  _MessageList
+);
