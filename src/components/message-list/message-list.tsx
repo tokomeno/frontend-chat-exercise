@@ -1,32 +1,47 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { IStoreState } from '../../redux/mainReducer';
 import { IConversation } from '../../redux/room/room.interface';
 import { ConversationSocketInstance } from '../../socket/conversation-socket/conversation-socket';
+import { TopBar } from '../UI/top-bar/top-bar';
 import { AddMessage } from './add-message';
 import styles from './styles.module.scss';
 
 interface Props {
   conversation?: IConversation;
-  conversationId: string;
 }
 
-const _MessageList: React.FC<Props> = ({ conversation, conversationId }) => {
+const _MessageList: React.FC<Props> = ({ conversation }) => {
   const user = useSelector(({ auth }: IStoreState) => auth.user);
-  // const conversation = useSelector(({ auth }: IStoreState) => auth.user);
+  const listWrapper = useRef<HTMLDivElement>(null);
 
-  console.log(conversation, conversationId);
+  const scrollBottom = () => {
+    if (listWrapper.current) {
+      listWrapper.current.scrollTop = listWrapper.current.scrollHeight;
+    }
+  };
+
+  const addNewMessage = (text: string) => {
+    ConversationSocketInstance.emitNewMessage({
+      conversation_id: conversation!.id,
+      message: text,
+    });
+    scrollBottom();
+  };
+
+  useEffect(() => {
+    scrollBottom();
+  }, [conversation]);
+
   if (!conversation) {
     return <h2>Not Found</h2>;
   }
   return (
     <div className={styles.wrapper}>
-      <div className={styles.bar}>
-        <h3 className={styles.title}>{conversation.name}</h3>
-      </div>
+      <TopBar title={conversation.name} />
       <div className={styles.scrollWrapper}>
-        <div className={styles.messageListContainer}>
+        <div ref={listWrapper} className={styles.messageListContainer}>
           {conversation.conversationMessages.map((message) => (
             <div
               key={message.id}
@@ -43,25 +58,15 @@ const _MessageList: React.FC<Props> = ({ conversation, conversationId }) => {
         </div>
       </div>
 
-      <AddMessage
-        onSubmit={(text) => {
-          ConversationSocketInstance.emitNewMessage({
-            conversation_id: conversation.id,
-            message: text,
-          });
-        }}
-      />
+      <AddMessage onSubmit={addNewMessage} />
     </div>
   );
 };
 
-const mapStateToProps = (
-  { room }: IStoreState,
-  { conversationId }: Omit<Props, 'conversation'>
-) => {
+const mapStateToProps = ({ room }: IStoreState) => {
   return {
     conversation: room.room?.conversations_list.find(
-      (c) => c.id === conversationId
+      (c) => c.id === room.active_conversation_id
     ),
   };
 };

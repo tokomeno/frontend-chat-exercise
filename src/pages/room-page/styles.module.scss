@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+  .conversationsList {
+    width: 25%;
+  }
+  .messageList {
+    width: 50%;
+  }
+  .userInfo {
+    width: 25%;
+  }
+}

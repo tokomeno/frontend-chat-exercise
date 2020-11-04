@@ -1,8 +1,19 @@
 import { IUser } from '../auth/auth-reducers';
 
+export interface IRoomUser extends IUser {
+  status: 'online' | 'offline';
+  last_seen?: string;
+}
+
+export type IServerRoom = {
+  [k in keyof Omit<IRoom, 'users_list'>]: IRoom[k];
+} & {
+  users_list: IUser[];
+};
+
 export interface IRoom {
   id: string;
-  users_list: IUser[];
+  users_list: IRoomUser[];
   conversations_list: IConversation[];
 }
 
@@ -18,5 +29,6 @@ export interface IMessage {
   id: string;
   message: string;
   time: number;
+  ltTime?: string;
   user?: IUser;
 }

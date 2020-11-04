@@ -1,0 +1,32 @@
+.wrapper {
+  border-right: 1px solid #ced4da;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+.conversationItem {
+  background-color: white;
+  min-height: 64px;
+  // border-bottom: 1px solid #ced4da;
+  border-radius: 15px;
+  padding: 20px 10px;
+  border-bottom: 10px;
+  &.active {
+    background-color: #f2f2f2;
+  }
+  .title {
+    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .lastMessage {
+    .username,
+    .message,
+    .time {
+      span {
+        margin-left: 8px;
+        font-weight: bold;
+      }
+    }
+  }
+}

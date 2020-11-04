@@ -1,9 +1,11 @@
+import { formatTime } from '../../helpers/format-time';
 import {
   IAddRoom,
   IUserHasLeft,
   IUserHasJoined,
   roomActionTypes,
   INewMessage,
+  ISetActiveConversationId,
 } from './room-types';
 
 export const setRoomAction = ({ room }: IAddRoom['payload']): IAddRoom => {
@@ -41,11 +43,26 @@ export const newMessageAction = ({
   conversation_id,
   message,
 }: INewMessage['payload']): INewMessage => {
+  const newMessage = {
+    ...message,
+    ltTime: formatTime(message.time),
+  };
   return {
     type: roomActionTypes.NEW_MESSAGE,
     payload: {
       conversation_id,
-      message,
+      message: newMessage,
+    },
+  };
+};
+
+export const setActiveConversationIdAction = ({
+  conversation_id,
+}: ISetActiveConversationId['payload']): ISetActiveConversationId => {
+  return {
+    type: roomActionTypes.SET_ACTIVE_CONVERSATION_ID,
+    payload: {
+      conversation_id,
     },
   };
 };

@@ -1,11 +1,19 @@
 import { IUser } from '../auth/auth-reducers';
-import { IMessage, IRoom } from './room.interface';
+import { IMessage, IServerRoom } from './room.interface';
 
 export enum roomActionTypes {
   USER_HAS_JOINED = 'USER_HAS_JOINED',
   USER_HAS_LEFT = 'USER_HAS_LEFT',
   SET_ROOM = 'SET_ROOM',
   NEW_MESSAGE = 'NEW_MESSAGE',
+  SET_ACTIVE_CONVERSATION_ID = 'SET_ACTIVE_CONVERSATION_ID',
+}
+
+export interface ISetActiveConversationId {
+  payload: {
+    conversation_id: string;
+  };
+  type: roomActionTypes.SET_ACTIVE_CONVERSATION_ID;
 }
 
 export interface IUserHasJoined {
@@ -24,7 +32,7 @@ export interface IUserHasLeft {
 
 export interface IAddRoom {
   payload: {
-    room: IRoom;
+    room: IServerRoom;
   };
   type: roomActionTypes.SET_ROOM;
 }
@@ -41,4 +49,5 @@ export type IRoomActions =
   | IUserHasJoined
   | IUserHasLeft
   | IAddRoom
-  | INewMessage;
+  | INewMessage
+  | ISetActiveConversationId;

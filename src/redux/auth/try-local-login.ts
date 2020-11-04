@@ -2,7 +2,6 @@ import { store } from '../store';
 import { setCurrentUser } from './auth-actions';
 
 export const tryLocalLogin = () => {
-  console.log('asd');
   const authStateFromStorage = localStorage.getItem('user');
   let storageAuthState: any;
 

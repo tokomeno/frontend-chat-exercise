@@ -1,5 +1,5 @@
 import { IUser } from '../../redux/auth/auth-reducers';
-import { IMessage, IRoom } from '../../redux/room/room.interface';
+import { IMessage, IServerRoom } from '../../redux/room/room.interface';
 
 export enum ConversationServerEventTypes {
   userJoined = 'userJoined',
@@ -10,11 +10,10 @@ export enum ConversationServerEventTypes {
 
 export interface IUserHasLeftSocketEvent {
   payload: {
-    useKey: string | number;
+    userKey: string | number;
   };
   eventName: ConversationServerEventTypes.userLeft;
 }
-
 export interface IUserHasJoinedSocketEvent {
   payload: {
     user: IUser;
@@ -24,7 +23,7 @@ export interface IUserHasJoinedSocketEvent {
 
 export interface IAddRoomSocketEvent {
   payload: {
-    room: IRoom;
+    room: IServerRoom;
   };
   eventName: ConversationServerEventTypes.roomInfo;
 }

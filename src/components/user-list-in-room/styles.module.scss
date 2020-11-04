@@ -1,0 +1,19 @@
+.wrapper {
+  border-right: 1px solid #ced4da;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+.userItem {
+  background-color: white;
+  min-height: 64px;
+  // border-bottom: 1px solid #ced4da;
+  border-radius: 15px;
+  padding: 20px 10px;
+  border-bottom: 10px;
+  .title {
+    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+}

@@ -21,8 +21,9 @@ interface ILoginForm {
 const _LoginPage: React.FC<Props> = ({ setCurrentUser }) => {
   const history = useHistory();
   const { handleInputChange, inputs } = useInputs<ILoginForm>();
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    (e.target as any).checkValidity();
     setCurrentUser({
       user: {
         id: inputs.user_id!,
@@ -36,7 +37,7 @@ const _LoginPage: React.FC<Props> = ({ setCurrentUser }) => {
     <div className={styles.wrapper}>
       <div className="right"></div>
       <div className="left">
-        <div>Login</div>
+        <div className={styles.formTitle}>Login</div>
 
         <form onSubmit={handleSubmit}>
           <FormGroup label="UserName">
@@ -52,6 +53,7 @@ const _LoginPage: React.FC<Props> = ({ setCurrentUser }) => {
               onChange={handleInputChange}
               name="user_id"
               required={true}
+              type="number"
             />
           </FormGroup>
 
@@ -60,10 +62,11 @@ const _LoginPage: React.FC<Props> = ({ setCurrentUser }) => {
               onChange={handleInputChange}
               name="room_id"
               required={true}
+              type="number"
             />
           </FormGroup>
 
-          <button className="btn default" onClick={handleSubmit}>
+          <button className="btn default mt-20" type="submit">
             Login
           </button>
         </form>

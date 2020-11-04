@@ -18,6 +18,7 @@ interface ConnectionQuery {
 }
 
 export class ConversationSocket {
+  private shouldTryReconnect: boolean = true;
   public ws: WebSocket | undefined;
   private connectionQuery: ConnectionQuery | undefined;
 
@@ -25,9 +26,9 @@ export class ConversationSocket {
     [key in ConversationServerEventTypes]?: Function[];
   } = {};
 
-  connect(connectionParams: ConnectionQuery) {
-    this.connectionQuery = connectionParams;
-    if (this.ws && this.ws.readyState === this.ws.OPEN) {
+  connect() {
+    this.shouldTryReconnect = true;
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       console.log('already connected');
       return;
     }
@@ -39,15 +40,22 @@ export class ConversationSocket {
     this.handleServerEvent();
   }
 
-  // automatically try to reconnect on connection loss
+  disconnect() {
+    this.shouldTryReconnect = false;
+    this.ws?.close();
+  }
+
+  // automatically try to reconnect on connection loss but if disconnect was called on purpose skip
   private reconnectOnClose() {
     this.ws!.onclose = () => {
-      console.log('disconnected onclose');
-      setTimeout(() => {
-        if (this.ws?.readyState === WebSocket.CLOSED) {
-          this.connect(this.connectionQuery!);
-        }
-      }, 1000);
+      console.log('disconnected');
+      if (this.shouldTryReconnect) {
+        setTimeout(() => {
+          if (this.ws?.readyState === WebSocket.CLOSED) {
+            this.connect();
+          }
+        }, 1000);
+      }
     };
     this.ws!.onerror = (err) => {
       console.error('Socket error: ', err);
@@ -89,9 +97,12 @@ export class ConversationSocket {
     return `${process.env.REACT_APP_SOCKET_URL}/?room_id=${this.connectionQuery?.room_id}&user_id=${this.connectionQuery?.user_id}&user_name=${this.connectionQuery?.user_name}`;
   }
 
-  disconnect() {
-    this.ws?.close();
-  }
+  setConnectionQuery = (connectionParams: ConnectionQuery) => {
+    this.connectionQuery = connectionParams;
+    return this;
+  };
+
+  //////////// Events
 
   emitNewMessage = (data: ISendNewMessageSocketEvent['payload']) => {
     let event: ISendNewMessageSocketEvent = {
