@@ -7,7 +7,6 @@ import { addNewMessageInConversation } from './helpers/add-new-message-in-conver
 import { formatTime } from '../../helpers/format-time';
 import { v4 as uuidv4 } from 'uuid';
 import { removeSendingMessageFromConversation } from './helpers/remove-sending-message-from-conversation';
-import { store } from '../store';
 
 export interface IRoomState {
   room: IRoom | undefined;

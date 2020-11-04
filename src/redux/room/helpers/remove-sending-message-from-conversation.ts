@@ -1,4 +1,4 @@
-import { IConversation, IMessage, IRoom } from '../room.interface';
+import { IConversation, IMessage } from '../room.interface';
 
 interface params {
   conversations_list: IConversation[];

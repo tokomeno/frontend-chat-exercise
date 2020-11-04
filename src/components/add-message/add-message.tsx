@@ -9,6 +9,7 @@ interface Props {
 export const AddMessage: React.FC<Props> = ({ onSubmit }) => {
   const inputHandler = useInput('');
   const handleSubmit = () => {
+    if (!(inputHandler.value && inputHandler.value.trim().length > 0)) return;
     onSubmit(inputHandler.value);
     inputHandler.setInputValue('');
   };
@@ -17,8 +18,11 @@ export const AddMessage: React.FC<Props> = ({ onSubmit }) => {
       <div className={styles.addNewMessage}>
         <textarea
           rows={3}
-          onKeyUp={(e) => {
-            if (e.key === 'Enter') handleSubmit();
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleSubmit();
+            }
           }}
           onChange={inputHandler.onChange}
           value={inputHandler.value}
