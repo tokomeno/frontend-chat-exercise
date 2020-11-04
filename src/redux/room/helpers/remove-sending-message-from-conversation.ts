@@ -11,7 +11,6 @@ export const removeSendingMessageFromConversation = ({
   message,
   conversation_id,
 }: params): IConversation[] => {
-  console.log('asdfa');
   return conversations_list.map((conversation) => {
     if (conversation.id !== conversation_id) return conversation;
     const newConversation: IConversation = {

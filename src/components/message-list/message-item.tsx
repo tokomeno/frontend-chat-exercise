@@ -10,7 +10,6 @@ interface Props {
   currentUserId: number;
   showAuthor: boolean;
   showTime: boolean;
-  isSending?: boolean;
 }
 
 export const MessageItem: React.FC<Props> = ({
@@ -18,7 +17,6 @@ export const MessageItem: React.FC<Props> = ({
   currentUserId,
   showAuthor,
   showTime,
-  isSending = false,
 }) => {
   // eslint-disable-next-line eqeqeq
   const byMe = currentUserId == message?.user?.id;
@@ -29,7 +27,7 @@ export const MessageItem: React.FC<Props> = ({
         [styles.byMe]: byMe,
       })}
     >
-      {showTime && <div className={styles.timestamp}>{message.time}</div>}
+      {showTime && <div className={styles.timestamp}>{message.ltTime}</div>}
       {showAuthor && <div className={styles.author}>{message.user?.name}</div>}
       <div className={styles.text}>
         {message.message}

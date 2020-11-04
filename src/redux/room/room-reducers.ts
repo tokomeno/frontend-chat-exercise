@@ -4,7 +4,7 @@ import { addLtTimeToConversationList } from './helpers/add-lt-time-to-conversati
 import moment from 'moment';
 import { addUserInList } from './helpers/add-user-in-list';
 import { addNewMessageInConversation } from './helpers/add-new-message-in-conversation';
-import { formatTime } from '../../helpers/format-time';
+import { formatTime } from '../../helpers/time-helpers';
 import { v4 as uuidv4 } from 'uuid';
 import { removeSendingMessageFromConversation } from './helpers/remove-sending-message-from-conversation';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { formatTime } from '../../helpers/format-time';
+import { formatTime } from '../../helpers/time-helpers';
 import { IStoreState } from '../../redux/mainReducer';
 import { setActiveConversationIdAction } from '../../redux/room/room-actions';
 import { IConversation } from '../../redux/room/room.interface';

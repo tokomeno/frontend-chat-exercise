@@ -1,4 +1,4 @@
-import { formatTime } from '../../helpers/format-time';
+import { formatTime } from '../../helpers/time-helpers';
 import {
   IAddRoom,
   IUserHasLeft,

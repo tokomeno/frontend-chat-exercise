@@ -38,30 +38,30 @@ const _RoomPage: React.FC<Props> = ({
   userHasLeftAction,
 }) => {
   useEffect(() => {
-    if (!user) return;
-
+    const roomId = +match.params.roomId;
+    if (!user || !roomId) return;
     const connectionQuery = {
       user_id: typeof user.id === 'string' ? parseInt(user.id) : user.id,
       user_name: user.name,
-      room_id: +match.params.roomId,
+      room_id: roomId,
     };
     ConversationSocketInstance.setConnectionQuery(connectionQuery).connect();
     ConversationSocketInstance.onNewMessage((event) => {
       const { payload } = event;
       receiveNewMessageAction({ ...payload, currentUser: user });
-    });
-    ConversationSocketInstance.onUserLeft((event) => {
-      const { payload } = event;
-      userHasLeftAction({ userId: payload.userKey });
-    });
-    ConversationSocketInstance.onUserJoined((event) => {
-      const { payload } = event;
-      userHasJoinedAction({ user: payload.user });
-    });
-    ConversationSocketInstance.onRoomInfo((event) => {
-      const { payload } = event;
-      setRoomAction({ room: payload.room });
-    });
+    })
+      .onUserLeft((event) => {
+        const { payload } = event;
+        userHasLeftAction({ userId: payload.userKey });
+      })
+      .onUserJoined((event) => {
+        const { payload } = event;
+        userHasJoinedAction({ user: payload.user });
+      })
+      .onRoomInfo((event) => {
+        const { payload } = event;
+        setRoomAction({ room: payload.room });
+      });
 
     return () => {
       ConversationSocketInstance.disconnect();

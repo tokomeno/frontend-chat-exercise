@@ -1,4 +1,4 @@
-import { formatTime } from '../../../helpers/format-time';
+import { formatTime } from '../../../helpers/time-helpers';
 import { IConversation } from '../room.interface';
 
 export const addLtTimeToConversationList = (

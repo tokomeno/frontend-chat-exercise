@@ -26,9 +26,13 @@ export class ConversationSocket {
     [key in ConversationServerEventTypes]?: Function[];
   } = {};
 
-  connect() {
+  connect(): void {
     this.shouldTryReconnect = true;
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (
+      this.ws &&
+      (this.ws.readyState === WebSocket.OPEN ||
+        this.ws.readyState === WebSocket.CONNECTING)
+    ) {
       console.log('already connected');
       return;
     }
@@ -51,7 +55,7 @@ export class ConversationSocket {
       console.log('disconnected');
       if (this.shouldTryReconnect) {
         setTimeout(() => {
-          if (this.ws?.readyState === WebSocket.CLOSED) {
+          if (this.ws?.readyState !== WebSocket.OPEN) {
             this.connect();
           }
         }, 1000);
@@ -102,6 +106,14 @@ export class ConversationSocket {
     return this;
   };
 
+  private sendEvent = (event: Object) => {
+    try {
+      this.ws!.send(JSON.stringify(event));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   //////////// Events
 
   emitNewMessage = (data: ISendNewMessageSocketEvent['payload']) => {
@@ -109,8 +121,7 @@ export class ConversationSocket {
       payload: data,
       eventName: ConversationClientEventTypes.newMessage,
     };
-    this.ws!.send(JSON.stringify(event));
-    // console.log(event);
+    this.sendEvent(event);
     return this;
   };
 
