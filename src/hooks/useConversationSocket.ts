@@ -7,7 +7,7 @@ import {
   setRoomAction,
   receiveNewMessageAction,
 } from '../redux/room/room-actions';
-import { ConversationSocketInstance } from '../socket/conversation-socket/conversation-socket';
+import { ConversationSocketSingleton } from '../socket/conversation-socket/conversation-socket';
 
 export const useConversationSocket = (roomId: number) => {
   const user = useSelector(({ auth }: IStoreState) => auth.user);
@@ -23,20 +23,20 @@ export const useConversationSocket = (roomId: number) => {
       user_name: user.name,
       room_id: roomId,
     };
-    ConversationSocketInstance.setConnectionQuery(connectionQuery).connect();
-    ConversationSocketInstance.onNewMessage((event) => {
+    ConversationSocketSingleton.setConnectionQuery(connectionQuery).connect();
+    ConversationSocketSingleton.onNewMessage((event) => {
       const { payload } = event;
       dispatch(receiveNewMessageAction({ ...payload, currentUser: user }));
     });
-    ConversationSocketInstance.onUserLeft((event) => {
+    ConversationSocketSingleton.onUserLeft((event) => {
       const { payload } = event;
       dispatch(userHasLeftAction({ userId: payload.userKey }));
     });
-    ConversationSocketInstance.onUserJoined((event) => {
+    ConversationSocketSingleton.onUserJoined((event) => {
       const { payload } = event;
       dispatch(userHasJoinedAction({ user: payload.user }));
     });
-    ConversationSocketInstance.onRoomInfo((event) => {
+    ConversationSocketSingleton.onRoomInfo((event) => {
       const { payload } = event;
       dispatch(setRoomAction({ room: payload.room }));
     });
@@ -44,7 +44,7 @@ export const useConversationSocket = (roomId: number) => {
 
   useEffect(() => {
     return () => {
-      ConversationSocketInstance.disconnect();
+      ConversationSocketSingleton.disconnect();
     };
   }, []);
 

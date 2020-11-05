@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { IStoreState } from '../../redux/mainReducer';
 import { IConversation, IMessage } from '../../redux/room/room.interface';
-import { ConversationSocketInstance } from '../../socket/conversation-socket/conversation-socket';
+import { ConversationSocketSingleton } from '../../socket/conversation-socket/conversation-socket';
 import { TopBar } from '../UI/top-bar/top-bar';
 import { AddMessage } from '../add-message/add-message';
 import styles from './styles.module.scss';
@@ -30,7 +30,7 @@ const _MessageList: React.FC<Props> = ({
   };
 
   const addNewMessage = (text: string) => {
-    ConversationSocketInstance.emitNewMessage({
+    ConversationSocketSingleton.emitNewMessage({
       conversation_id: conversation!.id,
       message: text,
     });

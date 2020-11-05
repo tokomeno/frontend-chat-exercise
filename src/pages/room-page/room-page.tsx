@@ -11,7 +11,7 @@ import {
   userHasLeftAction,
   setActiveConversationIdAction,
 } from '../../redux/room/room-actions';
-import { ConversationSocketInstance } from '../../socket/conversation-socket/conversation-socket';
+import { ConversationSocketSingleton } from '../../socket/conversation-socket/conversation-socket';
 import styles from './styles.module.scss';
 import { match } from 'react-router-dom';
 import { ConversationList } from '../../components/conversation-list/conversation-list';
@@ -37,37 +37,34 @@ const _RoomPage: React.FC<Props> = ({
   userHasJoinedAction,
   userHasLeftAction,
 }) => {
+  const roomId = +match.params.roomId;
   useEffect(() => {
-    const roomId = +match.params.roomId;
     if (!user || !roomId) return;
     const connectionQuery = {
       user_id: typeof user.id === 'string' ? parseInt(user.id) : user.id,
       user_name: user.name,
       room_id: roomId,
     };
-    ConversationSocketInstance.setConnectionQuery(connectionQuery).connect();
-    ConversationSocketInstance.onNewMessage((event) => {
-      const { payload } = event;
-      receiveNewMessageAction({ ...payload, currentUser: user });
-    })
-      .onUserLeft((event) => {
-        const { payload } = event;
+    ConversationSocketSingleton.setConnectionQuery(connectionQuery)
+      .connect()
+      .onNewMessage(({ payload }) => {
+        receiveNewMessageAction({ ...payload, currentUser: user });
+      })
+      .onUserLeft(({ payload }) => {
         userHasLeftAction({ userId: payload.userKey });
       })
-      .onUserJoined((event) => {
-        const { payload } = event;
+      .onUserJoined(({ payload }) => {
         userHasJoinedAction({ user: payload.user });
       })
-      .onRoomInfo((event) => {
-        const { payload } = event;
+      .onRoomInfo(({ payload }) => {
         setRoomAction({ room: payload.room });
       });
 
     return () => {
-      ConversationSocketInstance.disconnect();
+      ConversationSocketSingleton.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, roomId]);
 
   if (!room) {
     return <h2>Loading</h2>;

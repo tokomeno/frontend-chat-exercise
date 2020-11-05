@@ -2,7 +2,7 @@ export const routes = {
   home: () => {
     return '/';
   },
-  chatRoom: (id = ':roomId') => {
+  chatRoom: (id: number | string = ':roomId') => {
     return `/chat-app/${id}`;
   },
 };

@@ -1,3 +1,4 @@
+import { BaseSocket } from '../base-socket';
 import {
   ConversationClientEventTypes,
   ISendNewMessageSocketEvent,
@@ -17,104 +18,18 @@ interface ConnectionQuery {
   user_name: string;
 }
 
-export class ConversationSocket {
-  private shouldTryReconnect: boolean = true;
-  public ws: WebSocket | undefined;
-  private connectionQuery: ConnectionQuery | undefined;
-
-  private serverEventListeners: {
+class ConversationSocket extends BaseSocket<
+  IConversationServerSocketEvents,
+  keyof typeof ConversationServerEventTypes
+> {
+  protected connectionQuery: ConnectionQuery | undefined;
+  protected serverEventListeners: {
     [key in ConversationServerEventTypes]?: Function[];
   } = {};
 
-  connect(): void {
-    this.shouldTryReconnect = true;
-    if (
-      this.ws &&
-      (this.ws.readyState === WebSocket.OPEN ||
-        this.ws.readyState === WebSocket.CONNECTING)
-    ) {
-      console.log('already connected');
-      return;
-    }
-    this.ws = new WebSocket(this.getSocketUrl());
-    this.ws.onopen = () => {
-      console.log('connected');
-    };
-    this.reconnectOnClose();
-    this.handleServerEvent();
-  }
-
-  disconnect() {
-    this.shouldTryReconnect = false;
-    this.ws?.close();
-  }
-
-  // automatically try to reconnect on connection loss but if disconnect was called on purpose skip
-  private reconnectOnClose() {
-    this.ws!.onclose = () => {
-      console.log('disconnected');
-      if (this.shouldTryReconnect) {
-        setTimeout(() => {
-          if (this.ws?.readyState !== WebSocket.OPEN) {
-            this.connect();
-          }
-        }, 1000);
-      }
-    };
-    this.ws!.onerror = (err) => {
-      console.error('Socket error: ', err);
-      this.ws?.close();
-    };
-  }
-
-  private handleServerEvent() {
-    this.ws!.onmessage = (evt) => {
-      try {
-        const evtData: IConversationServerSocketEvents = JSON.parse(evt.data);
-        console.log(evtData);
-        this.triggerServerEventListener(evtData);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-  }
-
-  private registerServerEventListener(
-    eventName: keyof typeof ConversationServerEventTypes,
-    callback: Function
-  ) {
-    const handlers = this.serverEventListeners[eventName] || [];
-    handlers.push(callback);
-    this.serverEventListeners[eventName] = handlers;
-  }
-
-  private triggerServerEventListener = (
-    event: IConversationServerSocketEvents
-  ): void => {
-    const eventName = event.eventName;
-    const handler = this.serverEventListeners[eventName];
-    if (!handler || handler.length === 0) return;
-    handler.forEach((callback) => callback(event));
-  };
-
-  private getSocketUrl() {
+  public getSocketUrl() {
     return `${process.env.REACT_APP_SOCKET_URL}/?room_id=${this.connectionQuery?.room_id}&user_id=${this.connectionQuery?.user_id}&user_name=${this.connectionQuery?.user_name}`;
   }
-
-  setConnectionQuery = (connectionParams: ConnectionQuery) => {
-    this.connectionQuery = connectionParams;
-    return this;
-  };
-
-  private sendEvent = (event: Object) => {
-    try {
-      this.ws!.send(JSON.stringify(event));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  //////////// Events
 
   emitNewMessage = (data: ISendNewMessageSocketEvent['payload']) => {
     let event: ISendNewMessageSocketEvent = {
@@ -146,4 +61,4 @@ export class ConversationSocket {
   };
 }
 
-export const ConversationSocketInstance = new ConversationSocket();
+export const ConversationSocketSingleton = new ConversationSocket();
