@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import ContentLoader from 'react-content-loader';
 import { AddMessage } from '../add-message/add-message';
 import { TopBar } from '../UI/top-bar/top-bar';
@@ -34,7 +34,6 @@ export const MessageListLoader: React.FC<Props> = ({ items = 12 }) => {
                 speed={2}
                 width={'80%'}
                 height={30}
-                viewBox="0 0 100% 30"
                 backgroundColor="#f3f3f3"
                 foregroundColor="#ecebeb"
               >

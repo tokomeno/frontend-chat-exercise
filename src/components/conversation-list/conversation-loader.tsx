@@ -1,8 +1,6 @@
 import React from 'react';
-import ContentLoader, { Code } from 'react-content-loader';
-import { IConversation } from '../../redux/room/room.interface';
+import ContentLoader from 'react-content-loader';
 import { TopBar } from '../UI/top-bar/top-bar';
-import { ConversationItem } from './conversation-item';
 import styles from './styles.module.scss';
 
 interface Props {
@@ -32,7 +30,6 @@ export const ConversationListLoader: React.FC<Props> = ({ items = 10 }) => {
                   speed={2}
                   width={'100%'}
                   height={60}
-                  viewBox="0 0 100% 60"
                   backgroundColor="#f3f3f3"
                   foregroundColor="#ecebeb"
                 >
