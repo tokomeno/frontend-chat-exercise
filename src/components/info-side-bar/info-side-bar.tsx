@@ -12,20 +12,18 @@ export const InfoSideBar: React.FC<Props> = () => {
   const room = useSelector(({ room }: IStoreState) => room.room);
 
   return (
-    <>
-      <div className={styles.wrapper}>
-        <UserInfo />
-        <UserListInRoom />
-        {room && (
-          <>
-            <TopBar title="Room" />
-            <br />
-            <div className={styles.preJson}>
-              <pre>{JSON.stringify(room, null, 2)}</pre>
-            </div>
-          </>
-        )}
-      </div>
-    </>
+    <div className={styles.wrapper}>
+      <UserInfo />
+      <UserListInRoom />
+      {room && (
+        <>
+          <TopBar title="Room" />
+          <br />
+          <div className={styles.preJson}>
+            <pre>{JSON.stringify(room, null, 2)}</pre>
+          </div>
+        </>
+      )}
+    </div>
   );
 };

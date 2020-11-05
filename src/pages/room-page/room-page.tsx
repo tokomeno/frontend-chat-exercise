@@ -16,6 +16,9 @@ import styles from './styles.module.scss';
 import { match } from 'react-router-dom';
 import { ConversationList } from '../../components/conversation-list/conversation-list';
 import { InfoSideBar } from '../../components/info-side-bar/info-side-bar';
+import { ConversationListLoader } from '../../components/conversation-list/conversation-loader';
+import { MessageListLoader } from '../../components/message-list/message-list-loader';
+import { InfoSideBarLoader } from '../../components/info-side-bar/info-side-bar-loader';
 
 interface Props {
   match: match<{ roomId: string }>;
@@ -66,19 +69,17 @@ const _RoomPage: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, roomId]);
 
-  if (!room) {
-    return <h2>Loading</h2>;
-  }
   return (
     <div className={styles.wrapper}>
       <div className={styles.conversationsList}>
-        <ConversationList conversations={room?.conversations_list} />
+        {room && <ConversationList conversations={room.conversations_list} />}
+        {!room && <ConversationListLoader />}
       </div>
       <div className={styles.messageList}>
-        <MessageList />
+        {room ? <MessageList /> : <MessageListLoader />}
       </div>
       <div className={styles.userInfo}>
-        <InfoSideBar />
+        {user && room ? <InfoSideBar /> : <InfoSideBarLoader />}
       </div>
     </div>
   );
