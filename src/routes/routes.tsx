@@ -3,6 +3,6 @@ export const routes = {
     return '/';
   },
   chatRoom: (id: number | string = ':roomId') => {
-    return `/chat-app/${id}`;
+    return `/room/${id}`;
   },
 };
