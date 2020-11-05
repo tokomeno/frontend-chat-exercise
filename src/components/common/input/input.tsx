@@ -14,6 +14,7 @@ interface Props {
   useRef?: React.RefObject<any> | undefined | any;
   className?: string;
   required?: boolean;
+  style?: React.CSSProperties;
 }
 
 export const Input: React.FC<Props> = ({
@@ -27,10 +28,12 @@ export const Input: React.FC<Props> = ({
   onkeyup,
   onKeyPress,
   required,
+  style,
 }) => {
   return (
     <>
       <input
+        style={style}
         required={required}
         onKeyUp={onkeyup}
         onKeyPress={onKeyPress}
